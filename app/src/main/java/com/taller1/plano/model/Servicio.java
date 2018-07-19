@@ -13,6 +13,7 @@ import com.taller1.plano.utils.Constantes;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,80 @@ public class Servicio {
         String url = this.HOST + "sviviendas";
         HashMap<String, String> headers = new HashMap<>();
         this.getJsonArray(url, jsonListener, errorListener, headers);
+    }
+
+    /**
+     * Metodo que busca los empleados
+     * @param jsonListener
+     * @param errorListener
+     */
+    public void getEmpleados(Response.Listener<JSONArray> jsonListener,
+                             Response.ErrorListener errorListener){
+
+        String url = this.HOST + "sempleados";
+        HashMap<String, String> headers = new HashMap<>();
+        this.getJsonArray(url, jsonListener, errorListener, headers);
+    }
+
+    /**
+     * Metodo que busca los empleados
+     * @param jsonListener
+     * @param errorListener
+     */
+    public void getTuberias(Response.Listener<JSONArray> jsonListener,
+                             Response.ErrorListener errorListener){
+
+        String url = this.HOST + "stuberias";
+        HashMap<String, String> headers = new HashMap<>();
+        this.getJsonArray(url, jsonListener, errorListener, headers);
+    }
+
+    /**
+     * Metodo que obtiene el plano de la vivienda
+     * @param idVivienda identificador de vivienda
+     * @param jsonListener
+     * @param errorListener
+     */
+    public void getPlano(   int idVivienda,
+                            Response.Listener<JSONObject> jsonListener,
+                            Response.ErrorListener errorListener){
+
+        String url = this.HOST + "splanos/getplano/" + String.valueOf(idVivienda);
+
+        HashMap<String, String> headers = new HashMap<>();
+        this.getJsonObject(url, jsonListener, errorListener, headers);
+    }
+
+    /**
+     * Metodo que obtiene una lista de viviendas que tienen plano
+     * @param jsonListener
+     * @param errorListener
+     */
+    public void getViviendas_plano(
+                            Response.Listener<JSONObject> jsonListener,
+                            Response.ErrorListener errorListener){
+
+        String url = this.HOST + "splanos/get_viviendas_plano";
+
+        HashMap<String, String> headers = new HashMap<>();
+        this.getJsonObject(url, jsonListener, errorListener, headers);
+    }
+
+
+    /**
+     * Obtiene el detalle del plano a partir del id del plano
+     * @param idPlano identificador de plano
+     * @param jsonListener
+     * @param errorListener
+     */
+    public void getDetalle( int idPlano,
+                            Response.Listener<JSONObject> jsonListener,
+                            Response.ErrorListener errorListener){
+
+        String url = this.HOST + "splanos/getdetalle/" + String.valueOf(idPlano);
+
+        HashMap<String, String> headers = new HashMap<>();
+        this.getJsonObject(url, jsonListener, errorListener, headers);
     }
 
     /**
@@ -71,6 +146,76 @@ public class Servicio {
                 jsonObjectListener,
                 errorListener);
     }
+
+    /**
+     * Metodo que guarda un plano en el servidor
+     * @param idEmpleado identificdor de empleado
+     * @param idVivienda identificador de vivienda
+     * @param fecha fecha de plano
+     * @param jsonObjectListener
+     * @param errorListener
+     */
+    public void createPlano(
+            int idEmpleado,
+            int idVivienda,
+            Date fecha,
+            Response.Listener<JSONObject> jsonObjectListener,
+            Response.ErrorListener errorListener){
+
+        HashMap<String, Object> parametros = new HashMap<>();
+
+        parametros.put(Constantes.PLAN_IDEMPLEADO, idEmpleado);
+        parametros.put(Constantes.PLAN_IDVIVIENDA, idVivienda);
+        parametros.put(Constantes.PLAN_FECHA, fecha);
+
+        this.post(HOST+"splanos",
+                parametros,
+                jsonObjectListener,
+                errorListener);
+    }
+
+    /**
+     * Metodo que crea un detalle de tuberia en el servidor
+     * @param idPlano
+     * @param idTuberia
+     * @param distancia
+     * @param precioUnitario
+     * @param precioTotal
+     * @param index
+     * @param posX
+     * @param posY
+     * @param jsonObjectListener
+     * @param errorListener
+     */
+    public void createDetPlanoTuberia(
+            int idPlano,
+            int idTuberia,
+            float distancia,
+            float precioUnitario,
+            float precioTotal,
+            int index,
+            float posX,
+            float posY,
+            Response.Listener<JSONObject> jsonObjectListener,
+            Response.ErrorListener errorListener){
+
+        HashMap<String, Object> parametros = new HashMap<>();
+
+        parametros.put(Constantes.DETP_IDPLANO, idPlano);
+        parametros.put(Constantes.DETP_IDTUBERIA, idTuberia);
+        parametros.put(Constantes.DETP_DISTANCIA, distancia);
+        parametros.put(Constantes.DETP_PRECIO_UNI, precioUnitario);
+        parametros.put(Constantes.DETP_PRECIOTOT, precioTotal);
+        parametros.put(Constantes.DETP_INDEX, index);
+        parametros.put(Constantes.DETP_POSX, posX);
+        parametros.put(Constantes.DETP_POSY, posY);
+
+        this.post(HOST+"sdetplanotuberias",
+                parametros,
+                jsonObjectListener,
+                errorListener);
+    }
+
 
     /**
      * Metodo para hacer peticiones
@@ -150,7 +295,7 @@ public class Servicio {
         VolleySingleton.getInstance(context).addToRequestQueue(peticion);
     }
 
-    private void getObject(String uri,
+    private void getJsonObject(String uri,
                      Response.Listener<JSONObject> jsonListener,
                      Response.ErrorListener errorListener,
                      final HashMap<String, String> headers){
@@ -163,6 +308,10 @@ public class Servicio {
         ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
+
+                //Map<String,String> headers = new HashMap<String, String>();
+                //headers.put("Content-Type", "application/json");
+
                 return headers;
             }
         };

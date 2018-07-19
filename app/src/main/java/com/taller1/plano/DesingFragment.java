@@ -25,6 +25,9 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointD;
 import com.google.gson.Gson;
+import com.taller1.plano.model.Empleado;
+import com.taller1.plano.model.EntryTuberia;
+import com.taller1.plano.model.Tuberia;
 import com.taller1.plano.model.Vivienda;
 import com.taller1.plano.utils.Constantes;
 
@@ -41,12 +44,10 @@ public class DesingFragment extends Fragment implements OnChartGestureListener, 
 
     private static final String ARG_VIVIENDA = "VIVIENDA";
 
-    private Vivienda vivienda;
-
+    private DiseñoPlano negocio;
 
     @BindView(R.id.diseniador) LineChart diagrama;
     final String TAG = "ANDROIDE";
-    List<Entry> listaPuntos = new ArrayList<Entry>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -58,12 +59,20 @@ public class DesingFragment extends Fragment implements OnChartGestureListener, 
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             String vivienda = getArguments().getString(ARG_VIVIENDA);
+            String empleado = getArguments().getString("EMPLEADO");
+            String tuberia = getArguments().getString("TUBERIA");
 
             Gson gson = new Gson();
-            this.vivienda = gson.fromJson(vivienda, Vivienda.class);
+
+            Log.i(Constantes.TAG, "DesingPlano empleado : " + empleado);
+
+            negocio = new DiseñoPlano(getActivity().getApplicationContext(), this, this);
+
+            negocio.setVivienda(gson.fromJson(vivienda, Vivienda.class));
+            negocio.setEmpleado(gson.fromJson(empleado, Empleado.class));
+            negocio.setTuberiaUnica(gson.fromJson(tuberia, Tuberia.class));
         }
     }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -75,59 +84,29 @@ public class DesingFragment extends Fragment implements OnChartGestureListener, 
      * Metodo que guarda el plano en el servidor
      */
     private void guardarPlano(){
-
-    }
-    private void inicializar(){
-        try{
-            listaPuntos.add(new Entry(0,0));
-            Log.i(TAG, "fpase list ");
-            LineDataSet dataSet = new LineDataSet(listaPuntos, "");
-            dataSet.setFillAlpha(110);
-            dataSet.setColor(Color.BLUE);
-            dataSet.setDrawValues(false);
-
-            ArrayList<ILineDataSet> dsInterface = new ArrayList<ILineDataSet>();
-            dsInterface.add(dataSet);
-
-            LineData data = new LineData(dsInterface);
-
-            diagrama.setDragEnabled(true);
-            diagrama.setScaleEnabled(true);
-            diagrama.setOnChartValueSelectedListener(this);
-            diagrama.setOnChartGestureListener(this);
-
-            Description description = new Description();
-            description.setText("");
-            diagrama.setDescription(description);
-
-            diagrama.getLegend().setEnabled(false);
-
-
-            diagrama.setTouchEnabled(true);
-            diagrama.setData(data);
-            diagrama.invalidate(); // refresh the diagrama
-        }catch(Exception e){
-            Log.i(TAG, "error : " + e.getMessage());
+        if(negocio.getPlano() == null){
+            // todo es nuevo
+            negocio.guardarPlano();
+        }else{
+            negocio.actualizarPlano();
         }
-
     }
+
     public void insertarPunto(MPPointD punto){
         try{
 
-            if(listaPuntos.size() > 0){
-                Entry e1 = (Entry) listaPuntos.get(0);
+            if(negocio.getTuberias().size() > 0){
+                Entry e1 = (Entry) negocio.getTuberias().get(0);
                 if(e1.getX() == 0 && e1.getY() == 0){
                     // es el punto CERO y lo elimino
-                    listaPuntos.remove(0);
-                    Log.i(TAG, "punto removido: " + listaPuntos.size());
+                    negocio.removeTuberia(0);
+                    Log.i(TAG, "punto removido: " + negocio.getTuberias().size());
                 }
             }
-            Log.i(TAG, "pase inserrta1: ");
             float x = (float) Constantes.getDecimal(punto.x);
             float y = (float) Constantes.getDecimal(punto.y);
-            Entry entry = new Entry(x, y);
-            listaPuntos.add(entry);
-            diagrama.invalidate();
+            negocio.setTuberia(new EntryTuberia(x, y, null));
+            Log.i(TAG, "pase insertar count : " + negocio.getTuberias().size());
         }catch (Exception e){
             Log.i(TAG, "error : " + e.getMessage());
         }
@@ -139,7 +118,7 @@ public class DesingFragment extends Fragment implements OnChartGestureListener, 
 
         View view = inflater.inflate(R.layout.fragment_desing, container, false);
         ButterKnife.bind(this, view);
-        inicializar();
+        negocio.cargarDatosServidor(diagrama);
         return view;
     }
 

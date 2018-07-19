@@ -97,4 +97,18 @@ public class DetPlanoTuberia {
     public void setPosY(float posY) {
         this.posY = posY;
     }
+
+    @Override
+    public String toString(){
+        String s="";
+        s += "< idDetPlanoTuberia : " + String.valueOf(idDetPlanoTuberia) + ", ";
+        s += "idPlano : " + String.valueOf(idPlano) + ", ";
+        s += "idTuberia : " + String.valueOf(idTuberia) + ", ";
+        s += "distancia : " + String.valueOf(distancia) + ", ";
+        s += "precioUnitario : " + String.valueOf(precioUnitario) + ", ";
+        s += "index : " + String.valueOf(index) + ", ";
+        s += "posX : " + String.valueOf(posX) + ", ";
+        s += "posY : " + String.valueOf(posY) + " >";
+        return s;
+    }
 }
