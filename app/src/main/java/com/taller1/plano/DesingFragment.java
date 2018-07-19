@@ -87,9 +87,11 @@ public class DesingFragment extends Fragment implements OnChartGestureListener, 
         if(negocio.getPlano() == null){
             // todo es nuevo
             negocio.guardarPlano();
-        }else{
-            negocio.actualizarPlano();
         }
+        // desbloquear esto si uno no edita
+        //else{
+         //   negocio.actualizarPlano();
+        //}
     }
 
     public void insertarPunto(MPPointD punto){
@@ -99,13 +101,14 @@ public class DesingFragment extends Fragment implements OnChartGestureListener, 
                 Entry e1 = (Entry) negocio.getTuberias().get(0);
                 if(e1.getX() == 0 && e1.getY() == 0){
                     // es el punto CERO y lo elimino
-                    negocio.removeTuberia(0);
+                    //negocio.removeTuberia(0);
                     Log.i(TAG, "punto removido: " + negocio.getTuberias().size());
                 }
             }
             float x = (float) Constantes.getDecimal(punto.x);
             float y = (float) Constantes.getDecimal(punto.y);
             negocio.setTuberia(new EntryTuberia(x, y, null));
+
             Log.i(TAG, "pase insertar count : " + negocio.getTuberias().size());
         }catch (Exception e){
             Log.i(TAG, "error : " + e.getMessage());

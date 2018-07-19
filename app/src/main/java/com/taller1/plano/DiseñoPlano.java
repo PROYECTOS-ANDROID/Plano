@@ -96,7 +96,7 @@ public class DiseñoPlano {
 
     public void setTuberia(EntryTuberia entry){
         this.tuberias.add(entry);
-        representar();
+        diagrama.invalidate();
     }
     public void removeTuberia(int index){
         this.tuberias.remove(index);
@@ -242,8 +242,9 @@ public class DiseñoPlano {
                         Log.i(Constantes.TAG, "DiseñoPlano.cargarDatosServidor (plano encontrado)!!!");
                     }else{
                         // cuando no existe un plano en el servidor
-                        setTuberia(new EntryTuberia(0,0, null));
-                        //representar();
+                        setTuberia(new EntryTuberia(5,5, null));
+                        //setTuberia(new EntryTuberia(5,20, null));
+                        representar();
                     }
                 } catch (JSONException e) {
                     Log.i(Constantes.TAG, "jsonERrror :" + e.getMessage());
@@ -287,7 +288,7 @@ public class DiseñoPlano {
                                     setTuberia( new EntryTuberia(tuberia.getPosX(), tuberia.getPosY(), tuberia));
                                     Log.i(Constantes.TAG, "tuberia : " + tuberia.toString());
                                 }
-                                //representar();
+                                representar();
                             }
                         } catch (JSONException e) {
                             Log.i(Constantes.TAG, "Error json cargarDetalle : " + e.getMessage());
@@ -303,7 +304,7 @@ public class DiseñoPlano {
         );
     }
 
-    private void representar(){
+    public void representar(){
         try{
             LineDataSet dataSet = new LineDataSet( getTuberias(), "");
             dataSet.setFillAlpha(110);
@@ -317,15 +318,15 @@ public class DiseñoPlano {
 
             diagrama.setDragEnabled(true);
             diagrama.setScaleEnabled(true);
+            diagrama.setOnChartValueSelectedListener(listenerSelect);
+            diagrama.setOnChartGestureListener(listenerGesture);
 
             //diagrama.setScaleMinima(0f, 0f);
             //diagrama.fitScreen();
 
-            diagrama.setOnChartValueSelectedListener(listenerSelect);
-            diagrama.setOnChartGestureListener(listenerGesture);
 
             Description description = new Description();
-            description.setText("hola");
+            description.setText("");
             diagrama.setDescription(description);
 
             diagrama.getLegend().setEnabled(false);
@@ -333,7 +334,7 @@ public class DiseñoPlano {
 
             diagrama.setTouchEnabled(true);
             diagrama.setData(data);
-            diagrama.notifyDataSetChanged();
+            //diagrama.notifyDataSetChanged();
             diagrama.invalidate(); // refresh the diagrama
         }catch(Exception e){
             Log.i(Constantes.TAG, "error : " + e.getMessage());
