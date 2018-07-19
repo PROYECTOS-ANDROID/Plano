@@ -19,7 +19,8 @@ import java.util.Map;
 
 public class Servicio {
     //private final String HOST = "http://isyourphoto.herokuapp.com/";
-    private final String HOST = "http://192.168.1.4/appweb/web/";
+    private final String HOST = "http://patogas.herokuapp.com/";
+    //private final String HOST = "http://192.168.1.4/appweb/web/";
     private final Context context;
 
     public Servicio(Context context){

@@ -1,5 +1,6 @@
 package com.taller1.plano.Adapter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.taller1.plano.CotizacionFragment;
 import com.taller1.plano.DesingFragment;
+import com.taller1.plano.DiseñoCotizacion;
 import com.taller1.plano.R;
 import com.taller1.plano.model.Empleado;
 import com.taller1.plano.model.Tuberia;
@@ -82,14 +84,16 @@ public class ViviendaAdapter extends RecyclerView.Adapter<ViviendaAdapter.ViewHo
         }
 
         public void asignarDatos(final Empleado usuario,
-                                 final Vivienda vivienda,
+                                 final Vivienda v,
                                  final FragmentActivity actividadFragment,
                                  final Tuberia tuberia,
                                  final String tipo_lista
                                  ){
-            this.vivienda = vivienda;
+            this.vivienda = v;
             txtItemDuenio.setText("DUEÑO : " + vivienda.getDuenio());
             txtItemCalle.setText("DIRECCION : " + vivienda.getCalle() + " nro: " + vivienda.getNro());
+
+            Log.i(TAG, "onClick: id vivienda" + vivienda.getId());
 
             View.OnClickListener escuchador = new View.OnClickListener() {
                 @Override
@@ -108,22 +112,21 @@ public class ViviendaAdapter extends RecyclerView.Adapter<ViviendaAdapter.ViewHo
 
                         Log.i(TAG, "onClick: pase pasar variable");
                         fragmento.setArguments(bundle);
+                        actividadFragment.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.contenedor, fragmento)
+                                .addToBackStack(null)
+                                .commit();
+
                     }else{
-                        fragmento = new CotizacionFragment();
-                        Bundle bundle = new Bundle();
-
-                        Gson gson = new Gson();
-
-                        bundle.putString("VIVIENDA", gson.toJson(vivienda));
-
-                        Log.i(TAG, "onClick: pase a cotizacion");
-                        fragmento.setArguments(bundle);
+                        Log.i(Constantes.TAG, "id vivi : " + vivienda.getId());
+                        DiseñoCotizacion diseñador = new DiseñoCotizacion(
+                                actividadFragment,
+                                vivienda,
+                                usuario,
+                                tuberia);
+                        diseñador.generarCotizacion();
                     }
-                    actividadFragment.getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.contenedor, fragmento)
-                            .addToBackStack(null)
-                            .commit();
 
                     Log.i(TAG, "onClick: " + vivienda.getDuenio());
                 }

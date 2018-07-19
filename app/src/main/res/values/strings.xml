@@ -2,8 +2,8 @@
     <string name="app_name">Plano</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">PATOGAS SRL</string>
+    <string name="nav_header_subtitle">Al servicio del pueblo</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -19,4 +19,17 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="mensaje_recycler">mensaje_recycler</string>
+    <string name="invoice_number">NRO. DE COTIZACION : 000</string>
+    <string name="invoice_date">FECHA DE COTIZACION : </string>
+    <string name="company">EMPRESA : </string>
+    <string name="client_title">DATOS DEL CLIENTE : </string>
+    <string name="client_name">NOMBRE : </string>
+
+    <string name="detail_code">Codigo</string>
+    <string name="detail_description">Descripcion</string>
+    <string name="detail_amount">Cantidad</string>
+    <string name="detail_price">Precio</string>
+    <string name="detail_total">Precio Total</string>
+    <string name="invoice_subtotal">Sub-Total</string>
+    <string name="invoice_tax">Impuesto</string>
 </resources>
